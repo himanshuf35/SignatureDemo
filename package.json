@@ -10,8 +10,13 @@
     "test": "jest"
   },
   "dependencies": {
+    "@shopify/react-native-skia": "0.1.234 beta",
     "react": "18.2.0",
-    "react-native": "0.73.2"
+    "react-native": "0.73.2",
+    "react-native-gesture-handler": "^2.14.1",
+    "react-native-reanimated": "^3.6.1",
+    "react-native-safe-area-context": "^4.8.2",
+    "react-native-signature-pad-native": "git+https://github.com/himanshuf35/react-native-signature-pad-native.git"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
