@@ -48,4 +48,5 @@ export type GestureHandlerProps = {
 export type ParagraphTextProps = {
   text: string;
   matrix: SharedValue<SkMatrix>;
+  color: string;
 };

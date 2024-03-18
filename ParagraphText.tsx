@@ -7,6 +7,7 @@ import {textBoxSize} from './constants';
 const ParagraphText: FunctionComponent<ParagraphTextProps> = ({
   text,
   matrix,
+  color,
 }) => {
   const customFontMgr = useFonts({
     Inter: [
@@ -22,7 +23,7 @@ const ParagraphText: FunctionComponent<ParagraphTextProps> = ({
       return null;
     }
     const textStyle = {
-      color: Skia.Color('white'),
+      color: Skia.Color(color),
       fontFamilies: ['Inter'],
       fontSize: 28,
     };
@@ -30,7 +31,7 @@ const ParagraphText: FunctionComponent<ParagraphTextProps> = ({
       .pushStyle(textStyle)
       .addText(text)
       .build();
-  }, [customFontMgr, text]);
+  }, [color, customFontMgr, text]);
 
   return (
     <Paragraph

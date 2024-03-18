@@ -43,7 +43,7 @@ const PhotoEditor: FunctionComponent<PhotoEditorComponentProps> = ({
   const parsedImage = useImage(image);
   const touchState = useRef(false);
   const photoCanvasRef = useCanvasRef();
-  const [strokeWidth, setStrokeWidth] = useState(3);
+  const [strokeWidth, setStrokeWidth] = useState(5);
   const [strokeColor, setStrokeColor] = useState(colors.white);
   const [completedPaths, setCompletedPaths] = useState<CurrentPath[]>([
     {
@@ -58,6 +58,14 @@ const PhotoEditor: FunctionComponent<PhotoEditorComponentProps> = ({
   useEffect(() => {
     !editMode && setEraserEnabled(false);
   }, [editMode]);
+
+  useEffect(() => {
+    const currentPath = completedPaths[completedPaths.length - 1];
+    currentPath.paint = getPaint(strokeWidth, strokeColor);
+    currentPath.path.reset();
+    setCompletedPaths(prev => [...prev]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [strokeColor, strokeWidth]);
 
   const addTextBox = useCallback((currentStroke: string) => {
     const newTextBox: TextBoxData = {
@@ -84,6 +92,9 @@ const PhotoEditor: FunctionComponent<PhotoEditorComponentProps> = ({
   }, [addTextBox, strokeColor, texts]);
 
   const undoPaths = useCallback((prevPaths: CurrentPath[]) => {
+    if (prevPaths?.length < 2) {
+      return;
+    }
     prevPaths[prevPaths?.length - 2]?.path.reset();
     prevPaths.splice(prevPaths?.length - 2, 1);
     setCompletedPaths([...prevPaths]);
@@ -206,8 +217,13 @@ const PhotoEditor: FunctionComponent<PhotoEditorComponentProps> = ({
           return <Path key={index} path={path.path} paint={path.paint} />;
         })}
         {(!editMode || editMode === EditModes.brush) &&
-          texts?.map(({text, matrix}, index) => (
-            <ParagraphText key={text + index} text={text} matrix={matrix} />
+          texts?.map(({text, matrix, color}, index) => (
+            <ParagraphText
+              key={text + index}
+              text={text}
+              matrix={matrix}
+              color={color}
+            />
           ))}
       </Canvas>
       {editMode === EditModes.text &&

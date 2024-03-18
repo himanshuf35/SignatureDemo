@@ -5,56 +5,87 @@
  * @format
  */
 
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback} from 'react';
 import {
   StatusBar,
   StyleSheet,
   View,
   useColorScheme,
   Button,
-  SafeAreaView,
-  Image,
-  Modal,
+  TouchableOpacity,
 } from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import SignaturePad, {
-  SignatureResult,
-  SignaturePadMethods,
-} from 'react-native-signature-pad-native';
+// import {
+//   SignatureResult,
+//   SignaturePadMethods,
+// } from 'react-native-signature-pad-native';
 import PhotoEditor from './PhotoEditor';
 import {EditControlsProps} from './types';
 import {deviceWidth} from './constants';
 
+const colorPalette: string[] = [
+  '#a2b9bc',
+  '#6b5b95',
+  '#b2ad7f',
+  '#feb236',
+  '#878f99',
+  '#d64161',
+  '#ff7b25',
+  '#86af49',
+  '#b9936c',
+  '#034f84',
+  '#50394c',
+  '#80ced6',
+];
+
 function App(): React.JSX.Element {
-  const signatureRef = useRef<SignaturePadMethods>(null);
+  // const signatureRef = useRef<SignaturePadMethods>(null);
   const isDarkMode = useColorScheme() === 'dark';
-  const [signatureSvg, setSignatureSvg] = React.useState<string>('');
-  const [signatureImage, setSignatureImage] = React.useState<string>('');
-  const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);
+  // const [signatureSvg, setSignatureSvg] = React.useState<string>('');
+  // const [signatureImage, setSignatureImage] = React.useState<string>('');
+  // const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  const onDrawingEnd = React.useCallback((result: SignatureResult) => {
-    setSignatureSvg(result.signaturePathSvg);
-    setSignatureImage(result.image);
-  }, []);
+  // const onDrawingEnd = React.useCallback((result: SignatureResult) => {
+  //   setSignatureSvg(result.signaturePathSvg);
+  //   setSignatureImage(result.image);
+  // }, []);
 
-  const onClear = React.useCallback(() => {
-    signatureRef.current?.clear();
-  }, []);
-  const onShowImage = React.useCallback(() => {
-    setIsModalVisible(true);
-  }, []);
+  // const onClear = React.useCallback(() => {
+  //   signatureRef.current?.clear();
+  // }, []);
+  // const onShowImage = React.useCallback(() => {
+  //   setIsModalVisible(true);
+  // }, []);
+
+  const renderColors = useCallback(
+    (setStrokeColor?: (color: string) => void) => {
+      return (
+        <View style={styles.rowWrap}>
+          {colorPalette.map((color: string) => (
+            <TouchableOpacity
+              onPress={() => setStrokeColor?.(color)}
+              style={[styles.colorCircle, {backgroundColor: color}]}
+              key={Math.random().toString()}
+            />
+          ))}
+        </View>
+      );
+    },
+    [],
+  );
 
   const renderControls = useCallback(
     ({
       onBrushPress,
       onAddTextPress,
-      onUndoPress,
       onEraserPress,
       onDonePress,
+      onUndoPress,
+      setStrokeColor,
     }: EditControlsProps) => {
       return (
         <>
@@ -78,6 +109,7 @@ function App(): React.JSX.Element {
                 width: deviceWidth - 32,
               },
             ]}>
+            {renderColors(setStrokeColor)}
             <View style={styles.rowSpaceBetween}>
               <Button title={'Undo'} onPress={onUndoPress} />
               <Button title={'Done'} onPress={onDonePress} />
@@ -86,7 +118,7 @@ function App(): React.JSX.Element {
         </>
       );
     },
-    [],
+    [renderColors],
   );
 
   return (
@@ -142,6 +174,17 @@ const styles = StyleSheet.create({
   },
   imageStyle: {
     height: 500,
+  },
+  rowWrap: {
+    marginLeft: 25,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  colorCircle: {
+    height: 20,
+    width: 20,
+    borderRadius: 10,
+    marginHorizontal: 4,
   },
 });
 
